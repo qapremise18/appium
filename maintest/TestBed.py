@@ -1,35 +1,45 @@
-from testbedcore import AppiumLauncher,TestBedConfig,DeviceCapabilities
-from driver import CreateDriver
-import sys,time
-class TestBed :
-    def prepareBeforeTest(configParameters) :
-      try :
-            testBedConfig = TestBedConfig.test.getdriverinstance()
-            print("testBedConfig.getTestBedName>>>", testBedConfig.getTestBedName)
-            AppiumLauncher.closeAppiumSession(testBedConfig.getPort())
-            TestBed.driverInit(testBedConfig.getTestBedName())
+from testbedcore.TestBedConfig import TestBedConfig
+from testbedcore.AppiumLauncher import AppiumLauncher
+from testbedcore.DeviceCapabilities import DeviceCapabilities
+from driver.CreateDriver import CreateDriver
+import sys, time, unittest
 
+class TestBed(unittest.TestCase):
+
+    def setUp(self):
+      try :
+            self.testBedConfig = TestBedConfig()
+            self.testBedConfig.readConfig("D:\\PythonWS\\Premise\\resources\\config.properties")
+            # testBedConfig = TestBedConfig.test.getdriverinstance()
+            self.driverInstance = self.testBedConfig.getdriverinstance()
+            print("testBedConfig.getTestBedName>>>", self.testBedConfig.getTestBedName())
+            print("testBedConfig.getTestBedName22>>>", self.testBedConfig.getPort())
+            AppiumLauncher.closeAppiumSession(self.testBedConfig.getPort())
+            print("getPort>>>" + self.testBedConfig.getTestBedName())
+            print("TestBedName>>>"+ self.testBedConfig.getTestBedName())
+            self.driverInit(self.testBedConfig.getTestBedName())
             # loginTest = Login(testBedConfig.getDriver())
             # taskTest = Tasks(testBedConfig.getDriver())
             # taskHistoryTest = TaskHistory(testBedConfig.getDriver())
             # paymentTest = Payment(testBedConfig.getDriver())
             # settingTest = Settings(testBedConfig.getDriver())
       except:
-            print("Unable to load the property file::: " + sys.exc_info()[0])
+            print("Unable to load the property file::: " + sys.exc_info())
 
-    def driverInit(testBedName) :
-        testBedConfig = TestBedConfig.getInstance()
+    def driverInit(self, testBedName) :
+        # testBedConfig = TestBedConfig.getInstance()
         print("Initializing Android driver for testBedName:::" + testBedName)
         driver = None
         try :
-            AppiumLauncher.launchAppiumSession(testBedConfig, testBedName)
+            app = AppiumLauncher()
+            app.launchAppiumSession(self.testBedConfig, testBedName)
             devcap = DeviceCapabilities()
             #cap =  devcap.setMobileDeviceCapabilities
             crd = CreateDriver()
-            driver = crd.getDriver(DeviceCapabilities.setMobileDeviceCapabilities(testBedConfig, testBedName), testBedConfig,
+            driver = crd.getDriver(devcap.setMobileDeviceCapabilities(self.testBedConfig, testBedName),self.testBedConfig,
             testBedName)
             print("Driver created is :::" + driver.toString())
-            testBedConfig.setDriver(driver)
+            self.testBedConfig.setDriver(driver)
         except :
                 print("Unable to initialize driver :::" + sys.exc_info())
 
@@ -67,15 +77,18 @@ class TestBed :
         print("App Relaunched")
 
 
-    def driverCleanUp():
-        testBedConfig = TestBedConfig.getInstance()
+    def tearDown(self):
+        # testBedConfig = TestBedConfig.getInstance()
         try :
-            if (testBedConfig.getDriver() == None) :
+            if (self.testBedConfig.getDriver() == None) :
                 print("Unable to close appium as driver is null")
             else :
-                testBedConfig.getDriver().quit()
+                self.testBedConfig.getDriver().quit()
         except :
             print("Exception encountered in driverCleanUp():::" + sys.exc_info())
         finally :
-            if AppiumLauncher.closeAppiumSession(testBedConfig.getPort) ==  True:
+            if AppiumLauncher.closeAppiumSession(self.testBedConfig.getPort) ==  True:
                 print("Appium session clean up not successfull")
+
+# if __name__ == '__main__':
+#     unittest.main()
