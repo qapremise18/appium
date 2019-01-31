@@ -1,12 +1,39 @@
-import os,sys
+import os,sys ,subprocess
+
+# from maintest.TestBed import TestBed
 class AppiumLauncher:
 
- def launchAppiumSession(testBedConfig, testBedName):
-     command = testBedConfig.getNodePath() +" "+testBedConfig.getAppiumJSPath() +"-a 127.0.0.1 -p "+testBedConfig.getPort() +" -U " + testBedConfig.getUdid() + " --no-reset"
-     AppiumLauncher.executeCommand(command)
+ def launchAppiumSession(self, testBedConfig, testBedName):
+     # apptestBedConfig = self.testBedConfig
+     # apptestBedName   = self.testBedName
+     print("XXXXXXxx"+testBedName)
+     # print("XXXXXXxx" + apptestBedName)
+     print("2222" + testBedConfig.getNodePath())
+     print("2222" + testBedConfig.getAppiumJSPath())
+     print("2222" + testBedConfig.getPort())
+     print("2222" + testBedConfig.getUdid())
+     try:
+         command = testBedConfig.getNodePath() +" "+testBedConfig.getAppiumJSPath() +" --address 127.0.0.1 --port "+\
+                   testBedConfig.getPort() +" -U " +  testBedConfig.getUdid() + " --no-reset"
+         print("CMD appium \n",command)
+         AppiumLauncher.executeCommand(command)
+     except:
+         print("launchAppiumSession exception>>>"+ sys.exc_info())
+
+
+
+ # def executeCommand(command):
+ #     try:
+ #        os.system(command)
+ #     except:
+ #        print("executeCommand exception>>>" + sys.exc_info())
 
  def executeCommand(command):
-     os.system(command)
+     try:
+         returned_value = subprocess.call(command, shell=True)
+         print('returned value:', returned_value)
+     except:
+        print("executeCommand exception>>>" + sys.exc_info())
 
  def closeAppiumSession(portNumber):
   try:

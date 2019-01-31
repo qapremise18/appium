@@ -4,46 +4,46 @@
 
 import configparser
 import sys
-class TestBedConfig():
- deviceType = None
- screenSize = None
- maxWaitSeconds = 20
- maxImplicitWaitSeconds = 3
- maxInvisibletWaitSeconds = 3
-
- appiumVersion = None
- nodeJSPath = None
- screenRecord = None
- screenRecordPath = None
- appPackage = None
- appActivity = None
- udid = None
- device = None
- osVersion = None
- hub = "localhost"
- port = "4444"
- locale = None
- clearAppData = None
- takeScreenshot = None
- dataSheetPath = None
- screenshotPath = None
- customizedReportPath = None
- listeners = None
- testCoverage = None
- className = None
- testBedName = None
-
- currentTestBedMap = {}
- currentPortMap = {}
- driverMap = {}
- instance = None
- cap = None
- appiumLauncher = None
- createDriver = None
- driver = None
- props = None
- configFile = None
- config = None
+class TestBedConfig:
+ # deviceType = None
+ # screenSize = None
+ # maxWaitSeconds = 20
+ # maxImplicitWaitSeconds = 3
+ # maxInvisibletWaitSeconds = 3
+ #
+ # appiumVersion = None
+ # nodeJSPath = None
+ # screenRecord = None
+ # screenRecordPath = None
+ # appPackage = None
+ # appActivity = None
+ # udid = None
+ # device = None
+ # osVersion = None
+ # hub = "localhost"
+ # port = "4444"
+ # locale = None
+ # clearAppData = None
+ # takeScreenshot = None
+ # dataSheetPath = None
+ # screenshotPath = None
+ # customizedReportPath = None
+ # listeners = None
+ # testCoverage = None
+ # className = None
+ # testBedName = None
+ #
+ # currentTestBedMap = {}
+ # currentPortMap = {}
+ # driverMap = {}
+ # instance = None
+ # cap = None
+ # appiumLauncher = None
+ # createDriver = None
+ # driver = None
+ # props = None
+ # configFile = None
+ # config = None
 
  def __init__(self):
   pass
@@ -71,30 +71,31 @@ class TestBedConfig():
 
  def setVariable(self,config):
          try :
-                maxWaitSeconds = int(config.get("WAITS", "MAX_WAIT_TIME_SECONDS"))
-                maxImplicitWaitSeconds = int(config.get("WAITS", "IMPLICIT_WAIT_TIME_SECONDS"))
-                maxInvisibletWaitSeconds = int(config.get("WAITS", "MAX_INVISIBLE_WAIT_TIME_SECONDS"))
+                self.maxWaitSeconds = int(config.get("WAITS", "MAX_WAIT_TIME_SECONDS"))
+                self.maxImplicitWaitSeconds = int(config.get("WAITS", "IMPLICIT_WAIT_TIME_SECONDS"))
+                self.maxInvisibletWaitSeconds = int(config.get("WAITS", "MAX_INVISIBLE_WAIT_TIME_SECONDS"))
 
-                port = config.get("APPIUM_CONFIG", "PORT")
-                nodeJSPath = config.get("APPIUM_CONFIG", "NODEJSPATH")
-                appiumJSPath = config.get("APPIUM_CONFIG", "APPIUMJSPATH")
-                appActivity = config.get("APPIUM_CONFIG", "APPACTIVITY")
-                appPackage = config.get("APPIUM_CONFIG", "APPPACKAGE")
-                locale = config.get("OTHER", "LOCALE")
-                clearAppData = config.get("OTHER", "CLEARAPPDATA")
-                screenRecord = config.get("SCREENRECORD", "SCREENRECORD")
-                dataSheetPath = config.get("PATH", "DATASHEETPATH")
-                screenshotPath = config.get("PATH", "SCREENSHOTPATH")
-                testBedName = config.get("TESTNG", "TESTBED")
-                udid = config.get("DeviceFarm", testBedName)
-                listeners = config.get("TESTNG", "LISTENER")
-                className = config.get("TESTNG", "CLASSNAME")
-                testCoverage = config.get("TESTNG", "TESTCOVERAGE")
+                self.port = config.get("APPIUM_CONFIG", "PORT")
+                self.nodeJSPath = config.get("APPIUM_CONFIG", "NODEJSPATH")
+                self.appiumJSPath = config.get("APPIUM_CONFIG", "APPIUMJSPATH")
+                self.appActivity = config.get("APPIUM_CONFIG", "APPACTIVITY")
+                self.appPackage = config.get("APPIUM_CONFIG", "APPPACKAGE")
+                self.locale = config.get("OTHER", "LOCALE")
+                self.clearAppData = config.get("OTHER", "CLEARAPPDATA")
+                self.screenRecord = config.get("SCREENRECORD", "SCREENRECORD")
+                self.dataSheetPath = config.get("PATH", "DATASHEETPATH")
+                self.screenshotPath = config.get("PATH", "SCREENSHOTPATH")
+                self.testBedName = config.get("TESTNG", "TESTBED")
+                self.udid = config.get("DeviceFarm", self.testBedName)
+                self.listeners = config.get("TESTNG", "LISTENER")
+                self.className = config.get("TESTNG", "CLASSNAME")
+                self.testCoverage = config.get("TESTNG", "TESTCOVERAGE")
+                print("Succees in reading config file")
          except:
              print("Exception in setVariable:::", sys.exc_info())
 
  def getAppiumJSPath(self):
-         return TestBedConfig.appiumJSPath
+         return self.appiumJSPath
 
 
  def setDriver(self, dr):
@@ -102,17 +103,18 @@ class TestBedConfig():
 
  def getDriver(self):
      return self.driver
+
  def getPort(self):
-     return self.config.get("APPIUM_CONFIG", "TESTBED")
+     return self.port
 
  def getDevice(self):
-     return TestBedConfig.device
+     return self.device
 
  def getDeviceType(self):
-     return TestBedConfig.deviceType
+     return self.deviceType
 
  def getUdid(self):
-     return TestBedConfig.udid
+     return self.udid
 
  def isDeviceTypeAndroid(self):
     str = TestBedConfig.getDeviceType(self)
@@ -122,31 +124,31 @@ class TestBedConfig():
         return False
 
  def getNodePath(self):
-  return TestBedConfig.nodeJSPath
+  return self.nodeJSPath
 
  def getLocale(self):
-    return TestBedConfig.locale
+    return self.locale
 
  def getClearAppData(self):
-    return TestBedConfig.clearAppData
+    return self.clearAppData
 
  def getDataSheetPath(self):
-    return TestBedConfig.dataSheetPath
+    return self.dataSheetPath
 
  def getScreenshotPath(self):
-    return TestBedConfig.screenshotPath
+    return self.screenshotPath
 
 
  def getTestBedName(self):
-    return TestBedConfig.testBedName
+    return self.testBedName
 
 
  def getTestCoverage(self):
-    return TestBedConfig.testCoverage
+    return self.testCoverage
 
  def getClassName(self):
-    return TestBedConfig.className
+    return self.className
 
 
-test = TestBedConfig()
-test.readConfig("D:\\PythonWS\\Premise\\resources\\config.properties")
+# test = TestBedConfig()
+# test.readConfig("D:\\PythonWS\\Premise\\resources\\config.properties")
