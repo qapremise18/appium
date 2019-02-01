@@ -90,6 +90,7 @@ class TestBedConfig:
                 self.listeners = config.get("TESTNG", "LISTENER")
                 self.className = config.get("TESTNG", "CLASSNAME")
                 self.testCoverage = config.get("TESTNG", "TESTCOVERAGE")
+                self.deviceType = config.get("APPIUM_CONFIG", "deviceType")
                 print("Succees in reading config file")
          except:
              print("Exception in setVariable:::", sys.exc_info())

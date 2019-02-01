@@ -35,11 +35,12 @@ class AppiumLauncher:
      except:
         print("executeCommand exception>>>" + sys.exc_info())
 
- def closeAppiumSession(portNumber):
+ def closeAppiumSession(self, portNumber):
   try:
      print("Executing closeAppiumSession commmand on OS::: for port number:::" + portNumber)
      AppiumLauncher.executeCommand("taskkill /f /im node.exe")
      AppiumLauncher.executeCommand("taskkill /f /im adb.exe")
+     return True
   except:
      print("Exception occured on closeAppiumSession method :::" + sys.exc_info())
      return False

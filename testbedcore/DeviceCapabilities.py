@@ -8,8 +8,8 @@ class DeviceCapabilities():
             desired_caps["platformName"] = "Android"
             desired_caps["appPackage"] = testBedConfig.appPackage
             desired_caps["appActivity"] = testBedConfig.appActivity
-            desired_caps["udid"] = testBedConfig.getTestBedMap().get(testBedName)
-            desired_caps["platformVersion"] = testBedConfig.osVersion
+            desired_caps["udid"] = testBedConfig.udid
+            # desired_caps["platformVersion"] = testBedConfig.osVersion
             desired_caps["autoAcceptAlerts"] = True
             desired_caps["screenshotWaitTimeout"] = 60
             # if(DeviceInfo.isAndroidOreo())
