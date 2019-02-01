@@ -14,7 +14,8 @@ class TestBed(unittest.TestCase):
             self.driverInstance = self.testBedConfig.getdriverinstance()
             print("testBedConfig.getTestBedName>>>", self.testBedConfig.getTestBedName())
             print("testBedConfig.getTestBedName22>>>", self.testBedConfig.getPort())
-            AppiumLauncher.closeAppiumSession(self.testBedConfig.getPort())
+            self.appLaunchObj = AppiumLauncher()
+            self.appLaunchObj.closeAppiumSession(self.testBedConfig.getPort())
             print("getPort>>>" + self.testBedConfig.getTestBedName())
             print("TestBedName>>>"+ self.testBedConfig.getTestBedName())
             self.driverInit(self.testBedConfig.getTestBedName())
@@ -29,17 +30,17 @@ class TestBed(unittest.TestCase):
     def driverInit(self, testBedName) :
         # testBedConfig = TestBedConfig.getInstance()
         print("Initializing Android driver for testBedName:::" + testBedName)
-        driver = None
+        self.driver = None
         try :
             app = AppiumLauncher()
-            app.launchAppiumSession(self.testBedConfig, testBedName)
+            # app.launchAppiumSession(self.testBedConfig, testBedName)
             devcap = DeviceCapabilities()
             #cap =  devcap.setMobileDeviceCapabilities
             crd = CreateDriver()
-            driver = crd.getDriver(devcap.setMobileDeviceCapabilities(self.testBedConfig, testBedName),self.testBedConfig,
+            self.driver = crd.getDriver(devcap.setMobileDeviceCapabilities(self.testBedConfig, testBedName),self.testBedConfig,
             testBedName)
-            print("Driver created is :::" + driver.toString())
-            self.testBedConfig.setDriver(driver)
+            print("Driver created is :::", self.driver)
+            self.testBedConfig.setDriver(self.driver)
         except :
                 print("Unable to initialize driver :::" + sys.exc_info())
 
@@ -87,7 +88,7 @@ class TestBed(unittest.TestCase):
         except :
             print("Exception encountered in driverCleanUp():::" + sys.exc_info())
         finally :
-            if AppiumLauncher.closeAppiumSession(self.testBedConfig.getPort) ==  True:
+            if self.appLaunchObj.closeAppiumSession(self.testBedConfig.getPort()) == False:
                 print("Appium session clean up not successfull")
 
 # if __name__ == '__main__':
