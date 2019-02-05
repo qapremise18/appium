@@ -1,6 +1,6 @@
 from apicore.ApiCoreUtil import ApiCoreUtil
 from apicore.HttpCalls import HttpCalls
-import os,sys
+import os,sys,json
 
 class UserService(ApiCoreUtil):
     deleteUser = "https://user-service-dot-premise-qa.appspot.com/api/user/v1/users/"
@@ -22,14 +22,17 @@ class UserService(ApiCoreUtil):
         try :
             if (super(UserService, self).getAutorizationToken() != None) :
                 httpCall = HttpCalls()
-                print("DDDDDDDDDD",UserService.getUserURL)
-                print("EEEEEEE",UserService.getUserURL.join(emailID))
-                jsonObj = httpCall.sendGet(UserService.getUserURL.join(emailID), UserService.authorizationToken, "GET")
+                str =  UserService.getUserURL+ emailID
+                jsonObj = httpCall.sendGet(str, UserService.authorizationToken, "GET")
+                print("Type of json>>",type(jsonObj))
                 if jsonObj != None :
                     print("jsonObj result ::: ",jsonObj)
-                    if "User not found" in jsonObj :
-                        # premiseUserID = retrieveJSONValue(jsonObj, jsonFlow)
-                        # print(" Premise User Id - " + premiseUserID)
+                    data = json.dumps(jsonObj)
+                    print("ccc",type(data))
+                    print("ccc", data)
+                    if "User not found" not in data:
+                        premiseUserID = super(UserService, self).retrieveJSONValue(jsonObj, UserService.jsonFlow)
+                        print(" Premise User Id - " ,premiseUserID)
                         print("PASSS")
                     else:
                          self.setUserGetErrorMsg(jsonObj)
@@ -50,6 +53,25 @@ class UserService(ApiCoreUtil):
     def setUserGetErrorMsg(self, jsonMsg):
         userErrorMessage = jsonMsg
 
+    def  softDeleteUser(self, emailID):
+        try :
+            premiseUserID = self.getUser(emailID)
+            if (premiseUserID != "") :
+                httpCall = HttpCalls()
+                jsonData = httpCall.sendDelete(UserService.deleteUser + premiseUserID, UserService.authorizationToken, "DELETE")
+                data = json.dumps(jsonData)
+                if "User not found" not in data:
+                    userStatus = self.retrieveJSONValue(jsonData, "state")
+                    print("Status of email id - " + emailID + " is :- " + userStatus)
+                else :
+                     print("Unable to softDelete")
+                     return False
+        except :
+                print("Encountered exception in softDeleteUser:::" + sys.exc_info())
+                return False
+        return True
 
 useer = UserService()
-useer.getUser("qapremise18@gmail.com")
+s = useer.getUser("qapremise18@gmail.com")
+delUser = useer.softDeleteUser("qapremise18@gmail.com")
+print("userID>>",s)

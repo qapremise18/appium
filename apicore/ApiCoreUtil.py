@@ -11,8 +11,8 @@ class ApiCoreUtil:
 
     def getAutorizationToken(self) :
         error = None
-        token = None
-        retValue = None
+        token = ""
+        retValue = ""
         authCommand = self.prepareAuthCommand()
         if (authCommand != None or authCommand != "") :
             try :
@@ -29,7 +29,7 @@ class ApiCoreUtil:
             else :
                 print("Returning Token :- " + token)
                 retValue = token
-                ApiCoreUtil.authorizationToken = token
+                ApiCoreUtil.authorizationToken = token.strip()
         return retValue
 
     def executeCommand(self, command):
@@ -41,6 +41,16 @@ class ApiCoreUtil:
         return p
 
 
+    def retrieveJSONValue(self, data ,jsonKey):
+        val = ""
+        for key in data.keys():
+            print(key)
+        for key, value in data.items():
+            print(key, value)
+            if key == jsonKey:
+                val = value
+                break
+        return val
 # test = ApiCoreUtil()
 # print("CMD>>>>",test.prepareAuthCommand())
 # test.getAutorizationToken()
