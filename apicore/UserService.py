@@ -71,7 +71,63 @@ class UserService(ApiCoreUtil):
                 return False
         return True
 
+    def localPartialUpdateUser(self, emailID):
+        print("*localPartialUpdateUser","*"*5)
+        try :
+            premiseUserID = self.getUser(emailID)
+            if premiseUserID != "" :
+                self.partialUpdateUserURL = UserService.partialUpdateUser.replace("USERID", premiseUserID)
+                print("partialUpdateUser URL:::"+self.partialUpdateUserURL)
+                httpCall = HttpCalls()
+                jsonData = httpCall.sendPut(self.partialUpdateUserURL, UserService.authorizationToken, self.prepareLocalUpdateJSON())
+                data = json.dumps(jsonData)
+                if "User not found" not in data:
+                     self.printUserDetails(jsonData)
+            else :
+                print("Unable to update Partial User as Premise ID is empty")
+            return False
+        except:
+            print("Encountered exception in partialUpdateUser:::" + sys.exc_info())
+        return False
+
+    def prepareLocalUpdateJSON(self):
+        # jsonObject = "{ \"country\": \"KE\", \"city\": \"KE.NB.XX-005\"}"
+        jsonObject = "{ \"country\": \"US\", \"city\": \"US.CA.SF\"}"
+        # jsonObject = "{ \"country\": \"PH\", \"city\": \"PH.MM.MN\"}"
+        # jsonObject = "{ \"country\": \"MY\", \"city\": \"MY.KL.KL\"}"
+        # jsonObject = "{ \"country\": \"ID\", \"city\": \"ID.JK.JP\"}"
+        # jsonObject = "{ \"country\": \"TH\", \"city\": \"TH.CM.CM\"}"
+        # jsonObject = "{ \"country\": \"NG\", \"city\": \"NG.LA.XX-006\"}"
+        # jsonObject = "{ \"country\": \"VE\", \"city\": \"VE.XX-004\"}"
+        # jsonObject = "{ \"country\": \"CO\", \"city\": \"CO.VC.CL\"}"
+        # jsonObject = "{ \"country\": \"MX\", \"city\": \"MX.DF.AZ\"}"
+        # jsonObject = "{ \"country\": \"IN\", \"city\": \"IN.MH.MC-000\"}"
+        # jsonObject = "{ \"country\": \"BR\", \"city\": \"BR.SP\"}"
+        # jsonObject = "{ \"country\": \"TR\", \"city\": \"TR.IB.BE\"}"
+        # jsonObject = "{ \"country\": \"TZ\", \"city\": \"TZ.DO.DU\"}"
+        # jsonObject = "{ \"country\": \"BD\", \"city\": \"BD.DA.DH\"}"
+        # jsonObject = "{ \"country\": \"VN\", \"city\": \"VN.HC.HM\"}"
+        # jsonObject = "{ \"country\": \"TH\", \"city\": \"TH.BM.PP\"}"
+        # jsonObject = "{ \"country\": \"UA\", \"city\": \"UA.KC\"}"
+        # jsonObject = "{ \"country\": \"GH\", \"city\": \"GH.AA.AC\"}"
+        return jsonObject
+
+
+    def printUserDetails(self, jsonData):
+
+        premiseID = super(UserService, self).retrieveJSONValue(jsonData, UserService.jsonFlow)
+        premiseUserEmailID = super(UserService, self).retrieveJSONValue(jsonData, UserService.userEmailID)
+        premiseUserCountry = super(UserService, self).retrieveJSONValue(jsonData, UserService.userCountry)
+        premiseUserCity =  super(UserService, self).retrieveJSONValue(jsonData, UserService.userCity)
+        userStatus =  super(UserService, self).retrieveJSONValue(jsonData, UserService.userState)
+
+        # print("User Details >>> ID ::: " + premiseID + " || EmailID ::: " + premiseUserEmailID + " || Country ::: "
+        #     + premiseUserCountry + " || City ::: " + premiseUserCity + " || State ::: " + userStatus)
+        print("User Details >>> ID :::{} || EmailID ::: {} || Country ::: {}  || City ::: {} || State ::: ".format( premiseID,
+              premiseUserEmailID, premiseUserCountry , premiseUserCity, userStatus))
+
 useer = UserService()
-s = useer.getUser("qapremise18@gmail.com")
-delUser = useer.softDeleteUser("qapremise18@gmail.com")
-print("userID>>",s)
+# s = useer.getUser("qapremise18@gmail.com")
+# delUser = useer.softDeleteUser("qapremise18@gmail.com")
+# print("userID>>",s)
+useer.localPartialUpdateUser("qapremise95@gmail.com")

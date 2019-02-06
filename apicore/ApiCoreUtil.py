@@ -44,13 +44,55 @@ class ApiCoreUtil:
     def retrieveJSONValue(self, data ,jsonKey):
         val = ""
         for key in data.keys():
-            print(key)
+            print("Key>>",key)
         for key, value in data.items():
-            print(key, value)
+            print("Key>>",key, "<======>","Value>>",value)
             if key == jsonKey:
                 val = value
+                print("BREAKKKKKKKK val = value")
                 break
         return val
+
+    def find(self, key, dictionary):
+        for k, v in dictionary.items():
+            if k == key:
+                yield v
+            elif isinstance(v, dict):
+                for result in self.find(key, v):
+                    yield result
+            elif isinstance(v, list):
+                for d in v:
+                    for result in self.find(key, d):
+                        yield result
+
+    def iterate_all(self, iterable, returned="key"):
+        print("HI*************************8")
+        """Returns an iterator that returns all keys or values
+           of a (nested) iterable.
+
+           Arguments:
+               - iterable: <list> or <dictionary>
+               - returned: <string> "key" or "value"
+
+           Returns:
+               - <iterator>
+        """
+
+        if isinstance(iterable, dict):
+            for key, value in iterable.items():
+                if returned == "key":
+                    yield key
+                elif returned == "value":
+                    if not (isinstance(value, dict) or isinstance(value, list)):
+                        yield value
+                else:
+                    raise ValueError("'returned' keyword only accepts 'key' or 'value'.")
+                for ret in self.iterate_all(value, returned=returned):
+                    yield ret
+        elif isinstance(iterable, list):
+            for el in iterable:
+                for ret in self.iterate_all(el, returned=returned):
+                    yield ret
 # test = ApiCoreUtil()
 # print("CMD>>>>",test.prepareAuthCommand())
 # test.getAutorizationToken()
