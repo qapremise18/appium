@@ -1,7 +1,7 @@
 from apicore.ApiCoreUtil import ApiCoreUtil
 from apicore.UserService import UserService
 from apicore.HttpCalls import HttpCalls
-import os, sys
+import os, sys , json
 
 class TaskService(ApiCoreUtil):
 
@@ -44,8 +44,10 @@ class TaskService(ApiCoreUtil):
             # submissionID = super(TaskService, self).iterate_all(jsonData, "key")
             # submissionID = super(TaskService, self).find("submissionId",jsonData)
             app = ApiCoreUtil()
-            print("type>>>",type(jsonData))
-            submissionID = app.find("submissionId", jsonData)
+            print("type>>>SSSSSSSSSSSSSSS",type(jsonData))
+            data = json.dumps(jsonData)
+            print("type>>>SSSSSSSSSSSSSSS", type(data))
+            submissionID = app.find123("submissionId", data)
             print(" Submission ID - " , submissionID)
         except :
             print("Exception encountered for getting Submission Id :::" , sys.exc_info())
@@ -80,4 +82,4 @@ class TaskService(ApiCoreUtil):
 
 
 test = TaskService()
-test.taskSubmissionAction("qapremise95@gmail.com", "APPROVED", "AAAAAAA", "BBBBBBBBB")
+test.taskSubmissionAction("qapremise18@gmail.com", "APPROVED", "AAAAAAA", "BBBBBBBBB")

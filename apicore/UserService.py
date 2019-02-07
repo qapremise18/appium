@@ -28,8 +28,8 @@ class UserService(ApiCoreUtil):
                 if jsonObj != None :
                     print("jsonObj result ::: ",jsonObj)
                     data = json.dumps(jsonObj)
-                    print("ccc",type(data))
-                    print("ccc", data)
+                    print("type(data",type(data))
+                    print("data = json.dumps(jsonObj) ", data)
                     if "User not found" not in data:
                         premiseUserID = super(UserService, self).retrieveJSONValue(jsonObj, UserService.jsonFlow)
                         print(" Premise User Id - " ,premiseUserID)

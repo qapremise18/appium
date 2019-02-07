@@ -53,17 +53,21 @@ class ApiCoreUtil:
                 break
         return val
 
-    def find(self, key, dictionary):
-        for k, v in dictionary.items():
-            if k == key:
-                yield v
-            elif isinstance(v, dict):
-                for result in self.find(key, v):
-                    yield result
-            elif isinstance(v, list):
-                for d in v:
-                    for result in self.find(key, d):
+    def find123(self, key, dictionary):
+        print("**TEST**"*30)
+        try :
+            for k, v in dictionary.items():
+                if k == key:
+                    yield v
+                elif isinstance(v, dict):
+                    for result in self.find123(key, v):
                         yield result
+                elif isinstance(v, list):
+                    for d in v:
+                        for result in self.find123(key, d):
+                            yield result
+        except:
+            print("In Cathc find",sys.exc_info())
 
     def iterate_all(self, iterable, returned="key"):
         print("HI*************************8")
