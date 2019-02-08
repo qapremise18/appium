@@ -1,6 +1,7 @@
 from apicore.ApiCoreUtil import ApiCoreUtil
 from apicore.UserService import UserService
 from apicore.HttpCalls import HttpCalls
+from nested_lookup import get_all_keys
 import os, sys , json
 
 class TaskService(ApiCoreUtil):
@@ -18,6 +19,7 @@ class TaskService(ApiCoreUtil):
             user = UserService()
             premiseUserID = user.getUser(emailID)
             submissionID = self.getSubmissionId(premiseUserID)
+            print("Final submissionID>>",submissionID)
             observationStatus = self.setObservationId(submissionID, self.prepareFeedback(observationFeedback, action))
             if submissionID != "" & observationStatus :
                 newUrl = TaskService.saveSubmission.replace("SUBMISSIONID", submissionID)
@@ -40,18 +42,25 @@ class TaskService(ApiCoreUtil):
             httpCall = HttpCalls()
             jsonData = httpCall.sendGet(TaskService.getUserSubmissions+ premiseUserID, ApiCoreUtil.authorizationToken, "GET")
             print("json Response getSubmissionId: " ,jsonData)
-            # submissionID =  super(TaskService, self).retrieveJSONValue(jsonData, TaskService.jsonFlow)
+            # submissionID =  super(TaskService, self).retrieveJSONValue(jsonData, "items")
+            submissionID = super(TaskService, self).retrieveSubmissionID(jsonData, "items")
             # submissionID = super(TaskService, self).iterate_all(jsonData, "key")
             # submissionID = super(TaskService, self).find("submissionId",jsonData)
             app = ApiCoreUtil()
             print("type>>>SSSSSSSSSSSSSSS",type(jsonData))
-            data = json.dumps(jsonData)
-            print("type>>>SSSSSSSSSSSSSSS", type(data))
-            submissionID = app.find123("submissionId", data)
+            # data = json.dumps(jsonData)
+            # print("type>>>SSSSSSSSSSSSSSS", type(data))
+            # submissionID = app.find123("submissionId", data)
+            # submissionID =[]
+            # submissionID = get_all_keys(jsonData)
+            # self.mytest(jsonData)
+            # submissionID = app.retrieveJSONValueTEST("items", jsonData)
             print(" Submission ID - " , submissionID)
+            print(" typeSubmission ID - ", type(submissionID))
+            print(" geteSubmission ID - ", submissionID)
         except :
             print("Exception encountered for getting Submission Id :::" , sys.exc_info())
-            return submissionID
+        return submissionID
 
 
     def setObservationId(self,  submissionID, action):
@@ -78,6 +87,16 @@ class TaskService(ApiCoreUtil):
             feedback = ": \"status\": \""+action+"\""
 
         return feedback
+
+    def mytest(self,jsondata):
+        try:
+            for ka, va in enumerate(jsondata["submissionId"]):
+                print("ddddd>>",ka,va)
+        except :
+            print("EXXXXXXXXXXXXXXXXX",sys.exc_info())
+
+    def getObservationIDs(jsonData, obsID):
+        pass
 
 
 

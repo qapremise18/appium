@@ -42,6 +42,7 @@ class ApiCoreUtil:
 
 
     def retrieveJSONValue(self, data ,jsonKey):
+        print("MYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
         val = ""
         for key in data.keys():
             print("Key>>",key)
@@ -53,50 +54,84 @@ class ApiCoreUtil:
                 break
         return val
 
-    def find123(self, key, dictionary):
-        print("**TEST**"*30)
-        try :
-            for k, v in dictionary.items():
-                if k == key:
-                    yield v
-                elif isinstance(v, dict):
-                    for result in self.find123(key, v):
-                        yield result
-                elif isinstance(v, list):
-                    for d in v:
-                        for result in self.find123(key, d):
-                            yield result
-        except:
-            print("In Cathc find",sys.exc_info())
 
-    def iterate_all(self, iterable, returned="key"):
-        print("HI*************************8")
-        """Returns an iterator that returns all keys or values
-           of a (nested) iterable.
+    # def retrieveJSONValueTEST(self,data ,jsonKey):
+    #     print("MYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+    #     val = ""
+    #     for key in data.keys():
+    #         print("Key>>", key)
+    #     for key, value in data.items():
+    #         print("Key>>", key, "<======>", "Value>>", value)
+    #         print("instance of value",type(value))
+    #
+    #         if key == jsonKey:
+    #             val = value
+    #             print("BREAKKKKKKKK val = value")
+    #             break
+    #
+    #
+    #     return val
+    def retrieveSubmissionID(self, data, jsonKey):
+        subID = data["items"][0].get("submissionId")
+        print("retrieveSubmissionID>>",subID)
 
-           Arguments:
-               - iterable: <list> or <dictionary>
-               - returned: <string> "key" or "value"
+        # for submissionId, title in enumerate(data["items"]):
+        #     # dic = {}
+        #     # dic.g
+        #  print("MYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",submissionId)
+        #  print("YOUUUUUUUUUUUUUU", title)
+        #  print("YOUUUUUUUUUUUUUU", title.get("submissionId"))
+        return subID
 
-           Returns:
-               - <iterator>
-        """
 
-        if isinstance(iterable, dict):
-            for key, value in iterable.items():
-                if returned == "key":
-                    yield key
-                elif returned == "value":
-                    if not (isinstance(value, dict) or isinstance(value, list)):
-                        yield value
-                else:
-                    raise ValueError("'returned' keyword only accepts 'key' or 'value'.")
-                for ret in self.iterate_all(value, returned=returned):
-                    yield ret
-        elif isinstance(iterable, list):
-            for el in iterable:
-                for ret in self.iterate_all(el, returned=returned):
-                    yield ret
+    # def find123(self, key, dictionary):
+    #     print("**TEST**"*30)
+    #     try :
+    #         for k, v in dictionary.items():
+    #             if k == key:
+    #                 yield v
+    #             elif isinstance(v, dict):
+    #                 for result in self.find123(key, v):
+    #                     yield result
+    #             elif isinstance(v, list):
+    #                 for d in v:
+    #                     for result in self.find123(key, d):
+    #                         yield result
+    #     except:
+    #         print("In Cathc find",sys.exc_info())
+    #
+    # def iterate_all(self, iterable, returned="key"):
+    #     print("HI*************************8")
+    #     """Returns an iterator that returns all keys or values
+    #        of a (nested) iterable.
+    #
+    #        Arguments:
+    #            - iterable: <list> or <dictionary>
+    #            - returned: <string> "key" or "value"
+    #
+    #        Returns:
+    #            - <iterator>
+    #     """
+    #
+    #     if isinstance(iterable, dict):
+    #         for key, value in iterable.items():
+    #             if returned == "key":
+    #                 yield key
+    #             elif returned == "value":
+    #                 if not (isinstance(value, dict) or isinstance(value, list)):
+    #                     yield value
+    #             else:
+    #                 raise ValueError("'returned' keyword only accepts 'key' or 'value'.")
+    #             for ret in self.iterate_all(value, returned=returned):
+    #                 yield ret
+    #     elif isinstance(iterable, list):
+    #         for el in iterable:
+    #             for ret in self.iterate_all(el, returned=returned):
+    #                 yield ret
+
+
+
+
 # test = ApiCoreUtil()
 # print("CMD>>>>",test.prepareAuthCommand())
 # test.getAutorizationToken()
