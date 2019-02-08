@@ -1,5 +1,5 @@
 import json
-from nested_lookup import get_all_keys
+from nested_lookup import *
 class myTest:
 
     def recursiveitems(self, dictionary):
@@ -33,7 +33,7 @@ class myTest:
                      print("Hee")
 
     def method(self):
-        with open('testJSON.json', encoding='utf-8') as data_file:
+        with open('ObservationJSON.json', encoding='utf-8') as data_file:
             data = json.loads(data_file.read())
             return data
 
@@ -54,5 +54,6 @@ data = test.method()
 print(type(data))
 # test.myprint(data)
 # print (list(test.findkeys(data, 'id')))
-# keys = get_all_keys(data,"observationId")
-print(keys)
+keys = get_all_keys(data)
+val = get_occurrence_of_key(data,"observationId")
+print(val)
