@@ -21,7 +21,7 @@ class TaskService(ApiCoreUtil):
             submissionID = self.getSubmissionId(premiseUserID)
             print("Final submissionID>>",submissionID)
             observationStatus = self.setObservationId(submissionID, self.prepareFeedback(observationFeedback, action))
-            if submissionID != "" & observationStatus :
+            if submissionID != "" and observationStatus == True :
                 newUrl = TaskService.saveSubmission.replace("SUBMISSIONID", submissionID)
                 print("TaskService URL >>",newUrl)
                 httpCall = HttpCalls()
@@ -69,11 +69,17 @@ class TaskService(ApiCoreUtil):
             jsonData = httpCall.sendGet(TaskService.getCompletedTasks+ submissionID, ApiCoreUtil.authorizationToken, "GET")
             print("Observation Data ::: ", jsonData)
             observationSet = self.getObservationIDs(jsonData,"observationId")
-            itr = observationSet.iterator()
-            while(itr.hasNext()):
-                observationID = itr.next().toString()
-                print(observationSet)
-                jsonData1 = httpCall.sendPost(TaskService.submitObservation.replace("SUBMISSIONID", submissionID).replace("OBSERVATIONID", observationID), ApiCoreUtil.authorizationToken, action)
+            for obsID in observationSet:
+                print("obsID>>",obsID)
+                jsonData1 = httpCall.sendPost(
+                    TaskService.submitObservation.replace("SUBMISSIONID", submissionID).replace("OBSERVATIONID",
+                                                                                                obsID),
+                    ApiCoreUtil.authorizationToken, action)
+            # itr = observationSet.iterator()
+            # while(itr.hasNext()):
+            #     observationID = itr.next().toString()
+            #     print(observationSet)
+            #     jsonData1 = httpCall.sendPost(TaskService.submitObservation.replace("SUBMISSIONID", submissionID).replace("OBSERVATIONID", observationID), ApiCoreUtil.authorizationToken, action)
         except :
             print("Exception encountered for submitting observationId :::" , sys.exc_info())
             return False
@@ -82,9 +88,9 @@ class TaskService(ApiCoreUtil):
     def prepareFeedback(self, usereedback, action):
         feedback = ""
         if(usereedback!=""):
-            feedback = ": \"userFeedback\": [:\"feedback\": \""+usereedback+"\"],\"status\": \""+action+"\""
+            feedback = "{ \"userFeedback\": [{\"feedback\": \"" + usereedback + "\"}],\"status\": \"" + action + "\"}"
         else:
-            feedback = ": \"status\": \""+action+"\""
+            feedback = "{ \"status\": \"" + action + "\"}"
 
         return feedback
 
@@ -95,10 +101,43 @@ class TaskService(ApiCoreUtil):
         except :
             print("EXXXXXXXXXXXXXXXXX",sys.exc_info())
 
-    def getObservationIDs(jsonData, obsID):
-        pass
+    def getObservationIDs(self, jsonData, obsID):
+        print("getObservationIDs??",type(jsonData))
+        self.set = set()
+        for key, val in jsonData.items():
+            print(key,"===",val)
+            print(type(key),"===",type(val))
+            if isinstance(val, dict):
+                if "observationId" in str(val):
+                    print("In DIC ID")
+            elif isinstance(val, list):
+                if "observationId" in str(val):
+                    print("In LIST ID")
+                    print(val)
+                    print("n LIST ID>>",type(val))
+                    s = str(val)
+                    a = s.replace("'", "")
+                    print("replace ' single",a)
+                    print("COUNT>>>>>>>>",a.count("observationId"))
+                    a = a.replace("[", "").replace("{", "").replace("]", "").replace("}", "")
+                    print(a)
+                    print("replace  []", a)
+                    my = a.split(",")
+                    print("splitt ,>>", a)
+                    print(type(my))
+                    for x in my:
+                        print("Before split :: ", x)
+                        z = x.split(":")
+                        print("After split :: ",z)
+                        print(type(z))
+                        if "observationId" in str(z):
+                            print("GGGGGGGG", z[3])
+                            self.set.add(z[3].strip())
+        print("ObservationSEETTT>>",self.set)
+        return self.set
+
 
 
 
 test = TaskService()
-test.taskSubmissionAction("qapremise18@gmail.com", "APPROVED", "AAAAAAA", "BBBBBBBBB")
+test.taskSubmissionAction("qapremise23@gmail.com", "APPROVED", "AAAAAAA", "BBBBBBBBB")
