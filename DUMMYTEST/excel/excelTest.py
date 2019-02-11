@@ -1,6 +1,9 @@
 import openpyxl
 import sys
 from openpyxl import load_workbook
+from openpyxl import utils
+
+
 class ExcelTest:
 # wb = openpyxl.load_workbook('D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx')
 # print(wb.sheetnames)
@@ -22,51 +25,74 @@ class ExcelTest:
         return testData
 
 
-    # def readExcelData(self, filePath, sheetName, tableName):
-    #     testData = None
-    #     print("Reading file, sheet, table::: " , filePath + ", " , sheetName + ", " , tableName)
-    #     try:
-    #         workbook = openpyxl.load_workbook(filePath)
-    #         sheet = workbook.get_sheet_by_name(sheetName)
-    #         boundaryCells = self.findCell(sheet, tableName)
-    #         startCell = boundaryCells[0]
-    #         endCell = boundaryCells[1]
-    #
-    #         startRow = startCell.getRowIndex() + 1
-    #
-    #         endRow = endCell.getRowIndex()
-    #
-    #         startCol = startCell.getColumnIndex() + 1
-    #
-    #         endCol = endCell.getColumnIndex() - 1
-    #         testData = String[endRow - startRow + 1][endCol - startCol + 1]
-    #         for (int i = startRow i < endRow + 1 i++):
-    #             for (int j = startCol j < endCol + 1 j++):
-    #                 if (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_STRING):
-    #                     testData[i - startRow][j - startCol] = sheet.getRow(i).getCell(j).getStringCellValue()
-    #                 elif (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_NUMERIC):
-    #                      temp = sheet.getRow(i).getCell(j).getNumericCellValue()
-    #                      testData[i - startRow][j - startCol] = String.valueOf(temp.intValue())
-    #     except:
-    #         print("EORRRR readExcelData" , sys.exc_info())
-    #     return testData
+    def readExcelData(self, filePath, sheetName, tableName):
+        testData = None
+        print("Reading file, sheet, table::: " , filePath + ", " , sheetName + ", " , tableName)
+        try:
+            workbook = openpyxl.load_workbook(filePath)
+            sheet = workbook.get_sheet_by_name(sheetName)
+            boundaryCells = self.findCell(sheet, tableName)
+            startCell = boundaryCells[0]
+            endCell = boundaryCells[1]
+            print("readExcelData start end cell>>",startCell,"==",endCell)
+            startRow = startCell[0] + 1
+
+            endRow = startCell[3]
+
+            startCol = startCell[1] + 1
+
+            endCol = startCell[4] - 1
+            testData = [] # String[endRow - startRow + 1][endCol - startCol + 1]
+            # for (int i = startRow i < endRow + 1 i++):
+            #     for (int j = startCol j < endCol + 1 j++):
+            #         if (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_STRING):
+            #             testData[i - startRow][j - startCol] = sheet.getRow(i).getCell(j).getStringCellValue()
+            #         elif (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_NUMERIC):
+            #              temp = sheet.getRow(i).getCell(j).getNumericCellValue()
+            #              testData[i - startRow][j - startCol] = String.valueOf(temp.intValue())
+
+            for i in range(startRow, endRow+1):
+                for j in range(startRow,endRow+1):
+
+
+        except:
+            print("EORRRR readExcelData" , sys.exc_info())
+        return testData
 
 
     def findCell(self, sheet, text):
         pos = "start"
         cells = []
+        # get max row count
+        max_row = sheet.max_row +1
+        # get max column count
+        max_column = sheet.max_column +1
+        min_row =1
+        #for row in sheet.iter_rows(min_row , max_column, max_row):
+        print("PPPP>>",max_row,"==",max_column)
+
         try:
-            for row in sheet.iter_rows(min_row=1, max_col=3, max_row=2):
+            for row in sheet.iter_rows(min_row=1, max_col=max_column, max_row=max_row):
                 for cell in row:
-                    print("cell>>>",cell.value)
+                    print("for each cell>>>",cell.value)
                     if text == cell.value :
-                        print("In Cell val")
+                        print("In Cell val eyal to textXX>>",cell.row,"==",cell.column)
                         if pos == "start":
-                            cells[0] = cell
-                            pos == "end"
+                            print("In Cell val start")
+                            # cells[0] = cell
+                            cells.append(cell.row)
+                            cells.append(cell.column)
+                            pos = "end"
                         else:
-                            cells[1] = cell
-            print("HHHHH>>",cells)
+                            print("In Cell val end")
+                            # cells[1] = cell
+                            cells.append(cell.row)
+                            cells.append(cell.column)
+            print("HHHHH>>",cells,"==",cells[0],"==",type(cells[0]))
+            print(sheet["A47"])
+            # print(openpyxl.utils.cell.get_column_letter("A47"))
+            # print(cell.row,"=====RCC=",cell.column)
+            return cells
         except:
             print("Erorr in find cell>>>",sys.exc_info())
 
@@ -79,11 +105,15 @@ class ExcelTest:
                 print(cell)
 
     def excel_test(self):
-        filepath = "D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
+        # filepath = "D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
+
+        filepath = "K:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
         # load demo.xlsx
+
         wb = openpyxl.load_workbook(filepath)
         # select demo.xlsx
-        sheet = wb.active
+        #
+        sheet = wb.get_sheet_by_name("Smoke")
         # get max row count
         max_row = sheet.max_row
         # get max column count
@@ -104,7 +134,9 @@ class ExcelTest:
             print('\n')
         self.findCell(sheet,"PremiseTests")
 
-filePath = 'D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx'
+# filePath = 'D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx'
+filepath = "K:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
 test = ExcelTest()
+
 # test.getDataInHashMap(filePath,)
 test.excel_test()
