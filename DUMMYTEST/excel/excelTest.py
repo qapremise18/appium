@@ -14,12 +14,11 @@ class ExcelTest:
     def getDataInHashMap(self , dataSheetFilePath , sheetName, dataKey):
         testData = {}
         try:
-            dataSheetFilePath = ""
-            testDataArray = []
+            # testDataArray = {}
             testDataArray = self.readExcelData(dataSheetFilePath, sheetName, dataKey)
-            for i in testDataArray.len :
-                # testData.update(testDataArray[i][0], testDataArray[i][1])
-                testData[testDataArray[i][0]] =  testDataArray[i][1]
+            for i in range(len(testDataArray)) :
+                testData[testDataArray[i][0]]= testDataArray[i][1]
+                # testData[testDataArray[i][0]] =  testDataArray[i][1]
         except :
             print(" Failed to read excel data by data key  and store in linked hash map due to :::" + sys.exc_info())
         return testData
@@ -35,26 +34,25 @@ class ExcelTest:
             startCell = boundaryCells[0]
             endCell = boundaryCells[1]
             print("readExcelData start end cell>>",startCell,"==",endCell)
-            startRow = startCell[0] + 1
+            print("type>>@@@",type(startCell),"@@",type(endCell))
+            startRow = startCell + 1
+            endRow = boundaryCells[2]
 
-            endRow = startCell[3]
+            startCol = endCell + 1
+            sheet_obj = workbook.active
 
-            startCol = startCell[1] + 1
-
-            endCol = startCell[4] - 1
-            testData = [] # String[endRow - startRow + 1][endCol - startCol + 1]
-            # for (int i = startRow i < endRow + 1 i++):
-            #     for (int j = startCol j < endCol + 1 j++):
-            #         if (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_STRING):
-            #             testData[i - startRow][j - startCol] = sheet.getRow(i).getCell(j).getStringCellValue()
-            #         elif (sheet.getRow(i).getCell(j).getCellType() == HSSFCell.CELL_TYPE_NUMERIC):
-            #              temp = sheet.getRow(i).getCell(j).getNumericCellValue()
-            #              testData[i - startRow][j - startCol] = String.valueOf(temp.intValue())
-
+            endCol = boundaryCells[3] - 1
+            # testData = [] # String[endRow - startRow + 1][endCol - startCol + 1]
+            print("@@@TESTstartRow",startRow,"==endRow",endRow)
+            print("@@@TESTstartCol", startCol, "==endCol", endCol)
+            testData = [[0] * endCol for i in range(endRow-startRow+1)]
+            print("len>>",len(testData))
             for i in range(startRow, endRow+1):
-                for j in range(startRow,endRow+1):
-
-
+                print("for>>")
+                for j in range(startCol,endCol+1):
+                    testData[i - startRow][j - startCol]= sheet_obj.cell(row=i,column=j).value
+                    print("for>>22")
+            print("PRRRRR>>>",testData)
         except:
             print("EORRRR readExcelData" , sys.exc_info())
         return testData
@@ -89,7 +87,7 @@ class ExcelTest:
                             cells.append(cell.row)
                             cells.append(cell.column)
             print("HHHHH>>",cells,"==",cells[0],"==",type(cells[0]))
-            print(sheet["A47"])
+            # print(sheet["A47"])
             # print(openpyxl.utils.cell.get_column_letter("A47"))
             # print(cell.row,"=====RCC=",cell.column)
             return cells
@@ -135,8 +133,28 @@ class ExcelTest:
         self.findCell(sheet,"PremiseTests")
 
 # filePath = 'D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx'
-filepath = "K:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
+filepath = "D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
 test = ExcelTest()
-
 # test.getDataInHashMap(filePath,)
-test.excel_test()
+# test.excel_test()
+
+# arr = test.readExcelData(filepath,"Smoke","PremiseTests")
+# print("########################")
+# filepath = "D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
+# test = ExcelTest()
+# arr = test.readExcelData(filepath,"login","LoginTestData")
+# map = {}
+# print("ARR",arr[0][1])
+# print("ZZZ",type(arr))
+# print("CCCC",len(arr))
+# for i in range(len(arr)):
+#     print("XXXXXXXxx")
+#     map[arr[i][0]]= arr[i][1]
+# print("map",map["HaveCodeTestDataDreams"])
+# print("########################")
+
+dic = test.getDataInHashMap(filepath,"login", "Locators")
+print("$$",type(dic))
+print("$$",len(dic))
+print("##",dic["JoinNowButton"])
+# test.excel_test()
