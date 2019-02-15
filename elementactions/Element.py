@@ -38,3 +38,17 @@ class Element:
         except :
             print("Exception occured while getting element text for:::" + locator)
         return text
+
+
+    def isElementByLocatorNotDisplayed(self, locator) :
+        try :
+            element = self.getElementByLocator(locator)
+            if element.is_displayed():
+                print("Element found and isDisplayed::: true")
+                return False
+            else :
+                print("Element found BUT isDisplayed::: FALSE")
+                return True
+        except:
+            print("This is intended exception : Element could not be located using locator::: " , locator," Error message:::" ,sys.exc_info())
+            return True
