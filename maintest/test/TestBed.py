@@ -77,7 +77,19 @@ class TestBed(unittest.TestCase):
         time.sleep(3000)
         print("App Relaunched")
 
+    def clearAppDataAndLaunchApp2(self):
+        self.clearAppData()
+        self.launchApp()
+        testBedConfig = self.testBedConfig.getdriverinstance()
+        testBedConfig.getDriver().resetApp()
+        print("Relaunched App")
 
+    def clearAppData(self):
+        testBedConfig = self.testBedConfig.getdriverinstance()
+        AppiumLauncher.executeCommand("adb -s " + testBedConfig.getUdid()
+                                      + " shell pm clear " + testBedConfig.config.getValue("APPPACKAGE"))
+        time.sleep(3)
+        print("Cleared App data")
     def tearDown(self):
         # testBedConfig = TestBedConfig.getInstance()
         try :
