@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
-
+import time
 class Element:
     def __init__(self, driver):
         self.driver = driver
@@ -89,20 +89,46 @@ class Element:
             print("Failed to screenSwipeRight the device screen due to :::" + e.getMessage())
 
     def click(self, locator) :
-		try :
-			mapElement = self.getElementByLocator(locator)
-			if (mapElement != null) {
-				mapElement.click()
-				sleep(1000)
-				print("Clicked on Element having locator:::" + locator)
-				return True
-			else :
-				print("Failed to click on element as element is NULL ::: Locator:::" + locator)
-				return false
+        try :
+            mapElement = self.getElementByLocator(locator)
+            if mapElement is not None :
+                mapElement.click()
+                time.sleep(1)
+                print("Clicked on Element having locator:::".join(locator))
+                return True
+            else :
+                print("Failed to click on element as element is NULL ::: Locator:::" + locator)
+                return False
+        except :
+            print("Unable to click on element :::", locator)
+        return False
 
-		except :
-			print("Unable to click on element :::" + locator)
-			e.printStackTrace()
-		}
-		return False
-	}
+
+    def constructXpathUsingText(self, text) :
+        locator = "xpath=//*[@text=\"TEXT\"]"
+        return locator.replace("TEXT",text.__str__())
+
+    def isElementSelected(self, locator) :
+
+        flag = False
+        element = None
+        element = self.getElementByLocator(locator)
+        if element.is_selected() :
+            flag = True
+            print("Element is found and is selected using locator :::" , locator)
+        else :
+            flag = False
+            print("Element is found and not selected using locator :::" , locator)
+        return flag
+
+    def isElementByLocatorNotPresent(self, locator):
+        try:
+            element = self.getElementByLocator(locator)
+            print("Element is found in elementByLocatorNotPresent :::Locator ::" + locator)
+            return False
+        except :
+            return True
+
+    def constructXpathUsingContentDesc(self, text):
+        locator = "xpath=//*[contains(@content-desc,'TEXT']"
+        return locator.replace("TEXT", text.__str__())
