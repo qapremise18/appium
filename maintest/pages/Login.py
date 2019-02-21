@@ -139,7 +139,7 @@ class Login(Element):
             return True
 
     def checkForNewUser(self, emailID) :
-        us = UserService
+        us = UserService()
         return us.softDeleteUser(emailID)
 
     def isGoogleAccountPickerDisplayed(self):
@@ -209,6 +209,70 @@ class Login(Element):
         us = UserService()
         return us.partialUpdateUserMethod(emailID, partialUpdateUserPayLoad)
 
+
+    def handleCameraPermissionAllowPopUp(self):
+        self.click(self.locators["ClickForPermission"])
+        self.click(self.locators["PermissionAllowButton"])
+
+    def completeWeatherTask(self):
+        self.click(self.locators["WeatherStartTaskButton"])
+        self.click(self.locators["WeatherLikeToday"])
+        if self.isElementByLocatorNotDisplayed(self.locators["TakePhotoButton"]) == False :
+            self.click(self.locators["TakePhotoButton"])
+        else:
+            self.click(self.locators["TakePicButton"])
+
+        self.handleCameraPermissionAllowPopUp()
+
+        self.click(self.locators["CapturePhotoButton"])
+        self.click(self.locators["UsePhotoButton"])
+        self.click(self.locators["TakePhotoButtonNext"])
+        self.click(self.locators["ConfirmButton"])
+        self.click(self.locators["WeatherTypcalAnswer"])
+        recordLocation = ""
+        if self.isElementByLocatorNotDisplayed(self.locators["RecordLocation"]):
+            recordLocation = "RecordLocation"
+        else:
+            recordLocation = "RecordLocationOld"
+        print("recordLocation:" , recordLocation)
+
+        self.click(self.locators[recordLocation])
+        self.click(self.locators["SubmitLocation"])
+        self.click(self.locators["YesButton"])
+        self.click(self.locators["ConfirmTaskSubmit"])
+        self.click(self.locators["DoMoreTasksButton"])
+        return True
+
+    def isUserOnTaskScreen(self):
+        time.sleep(3)
+        return self.isElementByLocatorNotDisplayed(self.locators["TaskScreenButton"])
+
+    def completeOnBoardingFlow(self):
+        if self.isElementByLocatorNotDisplayed(self.locators["FindMyLocationButton"])== False:
+            flag =  self.click(self.locators["FindMyLocationButton"])== True
+            flag = expect(flag,"Unable to click on Find My Location Button")
+            if (flag == False):
+                return False
+            self.handleLocationPermissionAllowPopUp()
+            self.handlePhonePermissionAllowPopUp()
+
+            # self.isElementInvisible(self.locators["AndroidProgressBar"])
+            flag = self.click(self.locators["StartNowButton"]) == True
+            expect(flag,"Unable to click on Start Now Button")
+            if (flag == False):
+                return False
+        flag = self.completeWeatherTask()
+        if flag == False:
+            return False
+        flag = self.isUserOnTaskScreen()
+        return expect(flag == True, "My Task screen tab button not selected.")
+
+    def handleLocationPermissionAllowPopUp(self):
+        self.click(self.locators["PermissionAllowButton"])
+
+    def handlePhonePermissionAllowPopUp(self):
+        self.click(self.locators["PermissionAllowButton"])
+
     def verifyUserLogin(self, loginType, country):
         self.emailId = self.loginEmailData[loginType]
         self.loginType =loginType
@@ -238,7 +302,8 @@ class Login(Element):
             if isLoginSuccess is False :
                  return False
             termsConditionCount = self.termsConditionFlow()
-            isLoginSuccess = expect(self.completeOnBoardingFlow() == True, "Error in completing Onboarding flow")
+            isLoginSuccess = self.completeOnBoardingFlow()
+            expect( isLoginSuccess == True, "Error in completing Onboarding flow")
             if isLoginSuccess is False:
                 return False
             if "EMPTYSTATE" not in loginType:
