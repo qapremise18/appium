@@ -20,6 +20,7 @@ class UserService(ApiCoreUtil):
         premiseUserID = ""
         print("In getUser")
         try :
+
             if (super(UserService, self).getAutorizationToken() != None) :
                 httpCall = HttpCalls()
                 str =  UserService.getUserURL+ emailID
@@ -126,8 +127,33 @@ class UserService(ApiCoreUtil):
         print("User Details >>> ID :::{} || EmailID ::: {} || Country ::: {}  || City ::: {} || State ::: ".format( premiseID,
               premiseUserEmailID, premiseUserCountry , premiseUserCity, userStatus))
 
+    def partialUpdateUserMethod(self, emailID, partialUpdateUserPayLoad):
+        try:
+            premiseUserID = self.getUser(emailID)
+            if (premiseUserID != ""):
+                partialUpdateUserURL = UserService.partialUpdateUser.replace("USERID", premiseUserID)
+                print("partialUpdateUser URL:::>>", partialUpdateUserURL)
+                httpCall = HttpCalls()
+                jsonData = httpCall.sendPut(self.partialUpdateUserURL, UserService.authorizationToken,
+                                            self.prepareUpdateJSON(partialUpdateUserPayLoad))
+                data = json.dumps(jsonData)
+                if "User not found" not in data:
+                    self.printUserDetails(jsonData)
+                else:
+                    print("Unable to update Partial User as Premise ID is empty")
+                    return False
+        except:
+            print("Encountered exception in partialUpdateUser:::" , sys.exc_info())
+            return False
+        return True
+
+    def prepareUpdateJSON(self,partialUpdateUserPayLoad) :
+        jsonObject = partialUpdateUserPayLoad
+        return jsonObject
+
+
 useer = UserService()
 # s = useer.getUser("qapremise18@gmail.com")
-# delUser = useer.softDeleteUser("qapremise18@gmail.com")
+delUser = useer.softDeleteUser("qapremise18@gmail.com")
 # print("userID>>",s)
-useer.localPartialUpdateUser("qapremise18@gmail.com")
+# useer.localPartialUpdateUser("qapremise18@gmail.com")
