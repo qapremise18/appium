@@ -13,6 +13,10 @@ class Login(Element):
         self.testData = excel.getDataInHashMap("login", "LoginTestData")
         self.locators = excel.getDataInHashMap("login", "Locators")
         self.loginEmailData = excel.getDataInHashMap("login", "LoginEmailData")
+        # self.localeData = {}
+        # self.testData = {}
+        # self.locators = {}
+        # self.loginEmailData = {}
         self.flag = False
         self.testBed = TestBed()
         self.loginType = ""
@@ -26,10 +30,11 @@ class Login(Element):
         return not self.isElementByLocatorNotDisplayed(self.locators["LoginButton"])
 
     def verifyCarousel(self):
+        print("****verifyCarousel"*10)
         carouselList = None
         carouselList = self.getListOfElementsByLocator(self.locators["CarouselButton"])
         for i in range(0,4):
-            expect(self.isElementSelected(carouselList.get(i)),
+            expect(self.isElementSelected(carouselList[i]) == True,
                                         "Carousel bubble  not selected for carousel bubble number :::" +(i + 1).__str__())
             carouselBodyMessage = ""
             if (i == 0):
@@ -276,6 +281,7 @@ class Login(Element):
     def verifyUserLogin(self, loginType, country):
         self.emailId = self.loginEmailData[loginType]
         self.loginType =loginType
+        self.flag = True
 
         print("loginType::::::" + loginType)
         print("EMAIL ID:::::::::" + self.emailId)
@@ -307,7 +313,7 @@ class Login(Element):
             if isLoginSuccess is False:
                 return False
             if "EMPTYSTATE" not in loginType:
-                assert(self.changeUserGeoLocation(self.emailId, country),
+                expect(self.changeUserGeoLocation(self.emailId, country) == True,
                               "Partial update user failed for loginType:::" + self.emailId + " and user >>>"
                               + self.emailId)
             self.testBed.launchApp()
