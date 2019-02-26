@@ -1,12 +1,14 @@
 from util.ExcelReader import ExcelReader
 from elementactions.Element import Element
 from maintest.test.TestBed import TestBed
-import time
+import time,os,sys
 from delayed_assert import expect, assert_expectations
 from apicore.UserService import UserService
 
 class Login(Element):
     def __init__(self,driver):
+        print("CONSTTT Login", driver is None)
+        print("CONSTTT Login", driver == None)
         Element.__init__(self,driver)
         excel = ExcelReader()
         self.localeData = excel.getDataInHashMap("login", "LocaleData")
@@ -33,8 +35,13 @@ class Login(Element):
         print("****verifyCarousel"*10)
         carouselList = None
         carouselList = self.getListOfElementsByLocator(self.locators["CarouselButton"])
+        print("CARA>>>",len(carouselList))
+        if len(carouselList) < 1:
+            print("SKIPPING CARASOUL as coutn less 1")
+            return
+
         for i in range(0,4):
-            expect(self.isElementSelected(carouselList[i]) == True,
+            expect(carouselList[i].is_selected() == True,
                                         "Carousel bubble  not selected for carousel bubble number :::" +(i + 1).__str__())
             carouselBodyMessage = ""
             if (i == 0):
@@ -55,13 +62,17 @@ class Login(Element):
 
 
     def navigateToSignInScreen(self):
-        if "Existing" in self.loginType or "Existing":
+        print("in navigateToSignInScreen")
+        if "Existing" in self.loginType:
             flag = self.click(self.locators["LoginButton"])
             expect(flag == True,
                    "Failed to click on 'LOG IN' button for login user type ::: ".join(self.loginType))
             self.verifyLoginWelcomeBackScreen()
         else:
             print("Else in navigateToSignInScreen")
+            print("JOINN>>",self.locators["JoinNowButton"])
+            flag = self.click(self.locators["JoinNowButton"])
+            expect(flag == True, "Failed to click on 'SIGN UP' button for login user type ::: " + self.loginType)
 
     def verifyLoginWelcomeBackScreen(self):
         expect(self.isElementByLocatorNotDisplayed(self.locators["SignUpImage"]) == False,
@@ -119,12 +130,14 @@ class Login(Element):
 
         expect(self.isElementByLocatorNotDisplayed(self.locators["TermsOfServiceButton"]) == False,
                "Terms of Service link  NOT rendered for login user type :::" + self.loginType)
-        self.clickOnTermsOfServiceLink()
+        # self.clickOnTermsOfServiceLink()
 
         expect(self.isElementByLocatorNotDisplayed(self.locators["PrivacyPolicyButton"]) == False,
                "Privacy Policy link  NOT rendered for login user type :::" + self.loginType)
         print("Click on 'Privacy policy' link on  Terms and conditions window")
         # self.clickOnPrivacyPolicyLink()
+        self.click(self.locators["TermsAgreeButton"])
+        time.sleep(3)
 
     def clickOnTermsOfServiceLink(self):
         termsOfServiceWindow = expect(self.click(self.locators["TermsOfServiceButton"])== True,
@@ -173,7 +186,7 @@ class Login(Element):
                         break
         except :
             isAccountInList = False
-            print("Unable to add user")
+            print("Unable to add user",sys.exc_info())
         print("Is user account ::: " , self.emailId, " for account type:::" ,self.loginType
          + "::: found in google account picker :::> " ,isAccountInList)
         return isAccountInList
@@ -188,8 +201,9 @@ class Login(Element):
         if (flag):
             for i in range(0,5):
                 accDisplayed = self.isGoogleAccountPickerDisplayed()
+                print("accDisplayed>>",accDisplayed)
                 if (accDisplayed):
-                    if (self.isAccountNameExistAndisClicked() == False):
+                    if (self.isAccountNameExistAndisClicked() == True):
                      break
                 else:
                     self.driver.back()
@@ -216,8 +230,10 @@ class Login(Element):
 
 
     def handleCameraPermissionAllowPopUp(self):
-        self.click(self.locators["ClickForPermission"])
-        self.click(self.locators["PermissionAllowButton"])
+
+        if self.isElementByLocatorNotDisplayed(self.locators["ClickForPermission"]) == False:
+            self.click(self.locators["ClickForPermission"])
+            self.click(self.locators["PermissionAllowButton"])
 
     def completeWeatherTask(self):
         self.click(self.locators["WeatherStartTaskButton"])
@@ -235,12 +251,11 @@ class Login(Element):
         self.click(self.locators["ConfirmButton"])
         self.click(self.locators["WeatherTypcalAnswer"])
         recordLocation = ""
-        if self.isElementByLocatorNotDisplayed(self.locators["RecordLocation"]):
+        if self.isElementByLocatorNotDisplayed(self.locators["RecordLocation"]) == False:
             recordLocation = "RecordLocation"
         else:
             recordLocation = "RecordLocationOld"
         print("recordLocation:" , recordLocation)
-
         self.click(self.locators[recordLocation])
         self.click(self.locators["SubmitLocation"])
         self.click(self.locators["YesButton"])
@@ -253,6 +268,7 @@ class Login(Element):
         return self.isElementByLocatorNotDisplayed(self.locators["TaskScreenButton"])
 
     def completeOnBoardingFlow(self):
+        time.sleep(8)
         if self.isElementByLocatorNotDisplayed(self.locators["FindMyLocationButton"])== False:
             flag =  self.click(self.locators["FindMyLocationButton"])== True
             flag = expect(flag,"Unable to click on Find My Location Button")
@@ -262,9 +278,9 @@ class Login(Element):
             self.handlePhonePermissionAllowPopUp()
 
             # self.isElementInvisible(self.locators["AndroidProgressBar"])
-            flag = self.click(self.locators["StartNowButton"]) == True
-            expect(flag,"Unable to click on Start Now Button")
-            if (flag == False):
+        flag = self.click(self.locators["StartNowButton"]) == True
+        expect(flag,"Unable to click on Start Now Button")
+        if (flag == False):
                 return False
         flag = self.completeWeatherTask()
         if flag == False:
@@ -293,11 +309,11 @@ class Login(Element):
         if self.flag == True and "New" in loginType and "Private" not in loginType :
             expect (self.isUserOnboardingWelcomeScreen() == True, "User is not on onboarding Welcome screen")
             print("User is on onboarding Welcome screen")
-            carouselCount = self.verifyCarousel()
+            # carouselCount = self.verifyCarousel()
 
         print("Clicking on Sign IN")
-        flag = expect(self.navigateToSignInScreen() == True, "Unable to click on Navigate to sign in screen")
-        if (self.flag is False):
+        self.flag = expect(self.navigateToSignInScreen() == True, "Unable to click on Navigate to sign in screen")
+        if self.flag == False:
             return False
         print("Started Login validation for -->" + loginType)
         list = ["NewGmailPublicUser","NewFBPublicUser","NewGmailPrivateUserCALISU","NewGmailSuperPrivateUserDREAMS",
