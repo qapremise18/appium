@@ -19,7 +19,7 @@ class CreateDriver:
             self.driver.implicitly_wait(20)
             print("AppiumDriver successfully created:::createLocalDriver")
         except :
-            print("Error while createLocalDriver:::"+sys.exc_info())
+            print("Error while createLocalDriver:::",sys.exc_info())
             print("Throwable while createLocalDriver:::")
         return self.driver
 
