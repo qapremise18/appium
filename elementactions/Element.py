@@ -8,6 +8,8 @@ import time
 class Element:
     def __init__(self, driver):
         self.driver = driver
+        print("CONSTTT ",self.driver is None)
+        print("CONSTTT ", self.driver == None)
 
     def getMobileLocator(self,locator, identifier) :
             try :
@@ -23,6 +25,7 @@ class Element:
             identifier = locator[0:locator.index("=")]
             locatorVal = locator[locator.index("=")+1:]
             print("identifier=",identifier,"=== locatorVal",locatorVal)
+            print("IS NULLL>>",self.driver is None)
             element = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((identifier,locatorVal)))
             print("Element found ::presence_of_element_located::with locator : " , locator)
         except :
@@ -56,17 +59,35 @@ class Element:
 
     def getListOfElementsByLocator(self, locator):
         self.getElementByLocator(locator)
-        return self.getElementsByLocator(locator)
+        if "class" in locator:
+            return self.getElementsByLocatorClassName(locator)
+        elif "id=" in locator :
+            return self.getElementsByLocatorID(locator)
 
 
-    def getElementsByLocator(self, locator):
+    def getElementsByLocatorClassName(self, locator):
         element = []
         try:
             identifier = locator[0:locator.index("=")]
             locatorVal = locator[locator.index("=")+1:]
             print("identifier=",identifier,"=== locatorVal",locatorVal)
-            element =  self.driver.find_elements(identifier, locatorVal)
-            print("getElementsByLocator size>>>",len(element))
+            # element =  self.driver.find_elements(identifier, locatorVal)
+            element = self.driver.find_elements_by_class_name(locatorVal)
+            print("getElementsByLocatorClassName size>>>",len(element))
+            print("Element found ::presence_of_element_located::with locator : " , locator)
+        except :
+            print(" Failed to find element even on Explicit wait using",sys.exc_info())
+        return element
+
+    def getElementsByLocatorID(self, locator):
+        element = []
+        try:
+            identifier = locator[0:locator.index("=")]
+            locatorVal = locator[locator.index("=")+1:]
+            print("identifier=",identifier,"=== locatorVal",locatorVal)
+            # element =  self.driver.find_elements(identifier, locatorVal)
+            element = self.driver.find_elements_by_id(locatorVal)
+            print("getElementsByLocatorID size>>>",len(element))
             print("Element found ::presence_of_element_located::with locator : " , locator)
         except :
             print(" Failed to find element even on Explicit wait using",sys.exc_info())
@@ -74,19 +95,20 @@ class Element:
 
     def screenSwipeRight(self, startX, startY,  endX,  endY) :
         try :
-            windowSize = self.driver.get_window_size()
-            actions = TouchAction(self.driver)
-            actions.press(windowSize["width"])*0.85)
-            actions.wait()
-            actions.move_to()
-            actions.release().perform()
-            .press(PointOption.point((int) ((windowSize.width) * 0.85), (int) ((windowSize.height) * 0.90)))
-            .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000)))
-            .moveTo(PointOption.point((int) ((windowSize.width) * 0.10), (int) ((windowSize.height) * 0.90)))
-            .release().perform()
-            print("Completed swiping right the screen ")
+            print("screenSwipeRight TEST>>>>>>>>")
+            # windowSize = self.driver.get_window_size()
+            # actions = TouchAction(self.driver)
+            # actions.press(windowSize["width"])*0.85)
+            # actions.wait()
+            # actions.move_to()
+            # actions.release().perform()
+            # .press(PointOption.point((int) ((windowSize.width) * 0.85), (int) ((windowSize.height) * 0.90)))
+            # .waitAction(WaitOptions.waitOptions(Duration.ofMillis(2000)))
+            # .moveTo(PointOption.point((int) ((windowSize.width) * 0.10), (int) ((windowSize.height) * 0.90)))
+            # .release().perform()
+            # print("Completed swiping right the screen ")
         except :
-            print("Failed to screenSwipeRight the device screen due to :::" + e.getMessage())
+            print("Failed to screenSwipeRight the device screen due to :::",sys.exc_info())
 
     def click(self, locator) :
         try :
@@ -94,7 +116,7 @@ class Element:
             if mapElement is not None :
                 mapElement.click()
                 time.sleep(1)
-                print("Clicked on Element having locator:::".join(locator))
+                print("Clicked on Element having locator:::",locator)
                 return True
             else :
                 print("Failed to click on element as element is NULL ::: Locator:::" + locator)
