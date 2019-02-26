@@ -45,8 +45,8 @@ class TestBedConfig:
  # configFile = None
  # config = None
 
- def __init__(self):
-  pass
+ # def __init__(self):
+ #  pass
 
  instance = None
  appiumJSPath = None
@@ -108,8 +108,8 @@ class TestBedConfig:
  def getPort(self):
      return self.port
 
- def getDevice(self):
-     return self.device
+ # def getDevice(self):
+ #     return self.device
 
  def getDeviceType(self):
      return self.deviceType
@@ -138,6 +138,12 @@ class TestBedConfig:
 
  def getScreenshotPath(self):
     return self.screenshotPath
+
+ def getappActivity(self):
+    return self.appActivity
+
+ def getappPackage(self):
+    return self.appPackage
 
 
  def getTestBedName(self):

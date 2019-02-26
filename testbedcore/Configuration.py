@@ -14,7 +14,7 @@ class Configuration():
 		try:
 			value = self.config.get(section, key)
 		except:
-			print(" Exception encountered getValue- " + sys.exc_info()[0])
+			print(" Exception encountered getValue- " , sys.exc_info()[0])
 		return value
 
 

@@ -13,6 +13,7 @@ class AppiumLauncher:
      print("2222" + testBedConfig.getPort())
      print("2222" + testBedConfig.getUdid())
      try:
+         # AppiumLauncher.executeCommand("taskkill /f /im node.exe")
          command = testBedConfig.getNodePath() +" "+testBedConfig.getAppiumJSPath() +" --address 127.0.0.1 --port "+\
                    testBedConfig.getPort() +" -U " +  testBedConfig.getUdid() + " --no-reset"
          print("CMD appium \n",command)
@@ -32,8 +33,14 @@ class AppiumLauncher:
      try:
          returned_value = subprocess.call(command, shell=True)
          print('returned value:', returned_value)
+         # si = subprocess.STARTUPINFO()
+         # si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+         # subprocess.call(command, startupinfo=si)
+         # subprocess.Popen(command)
+         # sys.exit(0)
+         return True
      except:
-        print("executeCommand exception>>>" + sys.exc_info())
+        print("executeCommand exception>>>", sys.exc_info())
 
  def closeAppiumSession(self, portNumber):
   try:
