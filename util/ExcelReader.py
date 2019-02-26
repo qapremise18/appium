@@ -5,14 +5,15 @@ from openpyxl import utils
 
 
 class ExcelReader:
-    def getDataInHashMap(self , dataSheetFilePath , sheetName, dataKey):
+    def getDataInHashMap(self , sheetName, dataKey):
         testData = {}
         try:
+            dataSheetFilePath ="D:\\PythonWS\\Premise\\resources\\PremiseTestData.xlsx"
             testDataArray = self.readExcelData(dataSheetFilePath, sheetName, dataKey)
             for i in range(len(testDataArray)) :
                 testData[testDataArray[i][0]]= testDataArray[i][1]
         except :
-            print(" Failed to read excel data by data key  and store in linked hash map due to :::" + sys.exc_info())
+            print(" Failed to read excel data by data key  and store in linked hash map due to :::" , sys.exc_info())
         return testData
 
 
@@ -31,7 +32,8 @@ class ExcelReader:
             endRow = boundaryCells[2]
 
             startCol = endCell + 1
-            sheet_obj = workbook.active
+            sheet_obj = sheet
+            # sheet_obj = workbook.active
 
             endCol = boundaryCells[3] - 1
             print("@@@readExcelData",startRow,"==endRow",endRow)
@@ -61,7 +63,7 @@ class ExcelReader:
         try:
             for row in sheet.iter_rows(min_row=1, max_col=max_column, max_row=max_row):
                 for cell in row:
-                    print("for each cell>>>",cell.value)
+                    # print("for each cell>>>",cell.value)
                     if text == cell.value :
                         print("In Cell val eyal to textXX>>",cell.row,"==",cell.column)
                         if pos == "start":
@@ -104,3 +106,9 @@ class ExcelReader:
 # print("$$",len(dic))
 # print("##",dic["CarouselBodyText"])
 # test.excel_test()
+
+
+# country="US"
+# ex = ExcelReader()
+# partialUpdateUser = ex.getDataInHashMap("locale", "partialUpdateUser")
+# print("fff>>",partialUpdateUser)
