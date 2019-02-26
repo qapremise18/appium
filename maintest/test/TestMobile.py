@@ -1,6 +1,8 @@
 import unittest
 from maintest.test.TestBed import TestBed
 from maintest.pages.Login import Login
+from pyunitreport import HTMLTestRunner
+
 class TestMobile(TestBed):
 
   # def test_sample(self):
@@ -13,11 +15,12 @@ class TestMobile(TestBed):
 
 
   def test_login(self):
-      print("test LOGIN>>>>>")
+      print(">>>>test LOGIN>>>>>")
       login = Login(self.driver)
       login.verifyUserLogin("NewGmailPublicUser","US")
+      # self.driver.find_elements_by_id()
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testRunner=HTMLTestRunner(output='testreport'))
 

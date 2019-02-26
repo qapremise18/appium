@@ -84,6 +84,7 @@ class TestBed(unittest.TestCase):
                 + " shell am force-stop " + testBedConfig.appPackage)
         print("Closing the app")
 
+        time.sleep(2)
 
     def relaunchApp(self) :
         testBedConfig = self.testBedConfig.getdriverinstance()
@@ -125,7 +126,7 @@ class TestBed(unittest.TestCase):
             else :
                 self.testBedConfig.getDriver().quit()
         except :
-            print("Exception encountered in driverCleanUp():::" + sys.exc_info())
+            print("Exception encountered in driverCleanUp():::" , sys.exc_info())
         finally :
             if self.appLaunchObj.closeAppiumSession(self.testBedConfig.getPort()) == False:
                 print("Appium session clean up not successfull")
